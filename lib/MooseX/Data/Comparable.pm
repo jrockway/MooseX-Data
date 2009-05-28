@@ -8,10 +8,10 @@ role MooseX::Data::Comparable {
     }
 
     method is_less_than($other){
-        return $self->compare_to($other) == -1;
+        return $self->compare_to($other) < 0;
     }
 
     method is_greater_than($other){
-        return $self->compare_to($other) == 1;
+        return $self->compare_to($other) > 0;
     }
 }
