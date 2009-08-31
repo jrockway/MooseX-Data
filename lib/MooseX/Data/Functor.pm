@@ -1,6 +1,6 @@
 package MooseX::Data::Functor;
 use Moose::Role;
 
-has 'fmap';
+requires 'fmap';
 
 1;
