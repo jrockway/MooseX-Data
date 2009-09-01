@@ -44,6 +44,15 @@ method ap(Maybe $arg does coerce) {
     return $self->Just( $self->it->apply( $arg->it ) );
 }
 
-with 'MooseX::Data::Functor::Applicative';
+method show {
+    if($self->is_nothing) {
+        return 'Nothing';
+    }
+    else {
+        return 'Just '. (eval { $self->it->show } || $self->it);
+    }
+}
+
+with 'MooseX::Data::Functor::Applicative', 'MooseX::Data::Show';
 
 1;

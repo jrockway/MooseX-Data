@@ -2,7 +2,7 @@ package MooseX::Data::List;
 use Moose;
 use MooseX::AttributeHelpers;
 
-with 'MooseX::Data::Functor::Applicative';
+with 'MooseX::Data::Functor::Applicative', 'MooseX::Data::Show';
 
 has list => (
     metaclass  => 'Collection::List',
@@ -19,21 +19,26 @@ sub pure {
 }
 
 sub fmap {
-    my ($self, $f) = @_;
+    my ($self, $g) = @_; # self == functor, g == function
     return $self->new( list => [
-        map { $f->apply($_) } $self->list,
+        map { $g->apply($_) } $self->list,
     ]);
 }
 
 sub ap {
-    my ($self, $functor) = @_;
+    my ($self, $f) = @_; # self == functor, f == functor
 
     my @result;
-    for my $elt ($self->list) {
-        push @result, $functor->fmap($elt)->list;
+    for my $g ($self->list) { # g == function
+        push @result, $f->fmap($g)->list;
     }
 
     return $self->new( list => \@result );
+}
+
+sub show {
+    my $self = shift;
+    return '[ ' . (join ',', map { eval { $_->show } || $_ } $self->list). ' ]';
 }
 
 1;
