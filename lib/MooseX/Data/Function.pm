@@ -1,6 +1,8 @@
 package MooseX::Data::Function;
 use Moose;
 
+with 'MooseX::Data::Show', 'MooseX::Data::Functor::Applicative';
+
 has 'function' => (
     is       => 'ro',
     isa      => 'CodeRef',
@@ -40,6 +42,47 @@ sub apply {
         function => sub {
             my @args = @_;
             $self->function->($arg, @args);
+        },
+    );
+}
+
+sub show {
+    my $self = shift;
+    return '('. (join ' -> ', ('*')x$self->arity). ' -> *)';
+}
+
+sub compose {
+    my ($f, $g) = @_;
+
+    confess 'arity of $g in $f . $g must be 1'
+      unless $g->arity == 1;
+
+    return $f->new(
+        arity    => 1,
+        function => sub { $f->apply($g->apply(@_)) },
+    );
+}
+
+# const :: \x -> (\e -> x)
+sub pure {
+    my ($class, $value) = @_;
+
+    return $class->new(
+        arity    => 1,
+        function => sub { $value },
+    );
+}
+
+BEGIN { *fmap = *compose }
+
+# self <*> g = \env -> (self env (g env))
+sub ap {
+    my ($self, $g) = @_;
+    return $self->new(
+        arity    => 1,
+        function => sub {
+            my ($env) = @_;
+            return $self->apply($env)->apply($g->apply($env));
         },
     );
 }
