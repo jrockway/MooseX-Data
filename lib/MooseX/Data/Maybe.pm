@@ -53,6 +53,9 @@ method show {
     }
 }
 
+ # could be a monoid, but suffers from the same mempty problem that
+ # Function does
+
 with 'MooseX::Data::Functor::Applicative', 'MooseX::Data::Show';
 
 1;

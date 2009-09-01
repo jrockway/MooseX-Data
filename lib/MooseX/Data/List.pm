@@ -2,7 +2,9 @@ package MooseX::Data::List;
 use Moose;
 use MooseX::AttributeHelpers;
 
-with 'MooseX::Data::Functor::Applicative', 'MooseX::Data::Show';
+with 'MooseX::Data::Functor::Applicative',
+  'MooseX::Data::Monoid',
+  'MooseX::Data::Show';
 
 has list => (
     metaclass  => 'Collection::List',
@@ -39,6 +41,17 @@ sub ap {
 sub show {
     my $self = shift;
     return '[ ' . (join ',', map { eval { $_->show } || $_ } $self->list). ' ]';
+}
+
+sub mempty {
+    return $_[0]->new( list => [] );
+}
+
+sub mappend {
+    my ($a, $b) = @_;
+    return $a->new(
+        list => [ $a->list, $b->list ],
+    );
 }
 
 1;

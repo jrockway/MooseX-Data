@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 use MooseX::Data::List;
 use MooseX::Data::Function;
@@ -50,3 +50,8 @@ my $sums_and_differences = $add_and_subtract->ap( $list )->ap( $list );
 is_deeply [$sums_and_differences->list],
   [2,3,4,3,4,5,4,5,6,0,-1,-2,1,0,-1,2,1,0],
   'added and subtracted correctly';
+
+# test monoid
+is_deeply [MooseX::Data::List->mconcat($sums, $sums)->list],
+          [map { $sums->list } 1,2],
+  'monoid stuff works';

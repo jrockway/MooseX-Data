@@ -1,7 +1,9 @@
 package MooseX::Data::Function;
 use Moose;
 
-with 'MooseX::Data::Show', 'MooseX::Data::Functor::Applicative';
+with 'MooseX::Data::Show',
+  # 'MooseX::Data::Monoid',
+  'MooseX::Data::Functor::Applicative';
 
 has 'function' => (
     is       => 'ro',
@@ -83,6 +85,28 @@ sub ap {
         function => sub {
             my ($env) = @_;
             return $self->apply($env)->apply($g->apply($env));
+        },
+    );
+}
+
+# sub mempty {
+#     my $class = shift;
+#     state $id = 0;
+#     $id++;
+#     warn "mempty $id @_";
+#     return $class->new(
+#         arity => 2,
+#         function => sub { warn "evaluating mempty $id @_"; $_[0]->mempty },
+#     );
+# }
+
+sub mappend {
+    my ($f, $g) = @_;
+    return $f->new(
+        arity => 1,
+        function => sub {
+            my ($x) = @_;
+            return $f->apply($x)->mappend($g->apply($x));
         },
     );
 }
