@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 15;
+use Test::More tests => 22;
 
 use MooseX::Data::Function;
 use MooseX::Data::Maybe;
@@ -43,3 +43,36 @@ is $pplus->ap(2)->ap(2)->from_maybe, 4, '2 + 2 = 4';
 is $pplus->ap(2)->ap(undef)->from_maybe, undef, '2 + undef = undef';
 is $pplus->ap(undef)->ap(2)->from_maybe, undef, 'undef + 2 = undef';
 is $pplus->ap(undef)->ap(undef)->from_maybe, undef, 'undef + undef = undef';
+
+my $minc = MooseX::Data::Function->new(
+    arity    => 1,
+    function => sub { MooseX::Data::Maybe->mreturn(1 + $_[0]) },
+);
+
+is( MooseX::Data::Maybe->mreturn(1)->bind($minc)->from_maybe(0), 2, 'bind/Just works' );
+is( MooseX::Data::Maybe->Nothing->bind($minc)->from_maybe(0), 0, 'bind/Nothing works' );
+
+my $inc = MooseX::Data::Function->new(
+    arity    => 1,
+    function => sub { 1 + $_[0] },
+);
+
+is $one->liftM($inc)->it, 2, 'liftM works';
+is( MooseX::Data::Maybe->Nothing->liftM($inc)->from_maybe(123), 123, 'liftM works' );
+
+my $minus = MooseX::Data::Function->new(
+    arity    => 2,
+    function => sub { $_[0] - $_[1] },
+);
+
+my $ten = MooseX::Data::Maybe->Just(10);
+is $ten->liftM2($one, $minus)->from_maybe('fail'),
+  9, 'liftM2 works';
+
+is (
+    MooseX::Data::Maybe->Nothing->liftM2($one, $minus)->from_maybe('fail'),
+    'fail', 'liftM2 works',
+);
+
+is $ten->liftM2(MooseX::Data::Maybe->Nothing, $minus)->from_maybe('fail'),
+  'fail', 'liftM2 works';

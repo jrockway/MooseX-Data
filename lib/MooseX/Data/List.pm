@@ -54,4 +54,11 @@ sub mappend {
     );
 }
 
+sub bind {
+    my ($self, $g) = @_;
+    my $result = $self->mempty;
+    $result = $result->mappend($g->apply($_)) for $self->list;
+    return $result;
+}
+
 1;

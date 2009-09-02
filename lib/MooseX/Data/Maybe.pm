@@ -28,9 +28,9 @@ method from_maybe(Any $default) {
     return $self->is_nothing ? $default : $self->it;
 }
 
-sub pure {
-    goto \&Just;
-}
+BEGIN { *pure = *Just }
+BEGIN { *mreturn = *Just }
+
 
 method fmap(Function $f) {
     if($self->has_it){
@@ -53,9 +53,16 @@ method show {
     }
 }
 
+method bind(Function $f) {
+    return $self->Nothing if $self->is_nothing;
+    return $f->apply($self->it);
+}
+
  # could be a monoid, but suffers from the same mempty problem that
  # Function does
 
-with 'MooseX::Data::Functor::Applicative', 'MooseX::Data::Show';
+with 'MooseX::Data::Functor::Applicative',
+  'MooseX::Data::Show',
+  'MooseX::Data::Monad';
 
 1;
