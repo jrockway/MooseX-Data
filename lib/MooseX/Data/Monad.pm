@@ -9,9 +9,10 @@ sub sequence {
     my ($a, $b) = @_;
     return $a->bind( MooseX::Data::Function->new(
         arity => 1,
-        function => sub { my $ignore = shift; $b }
+        function => sub { my $ignore = shift; $b->apply() }
     ));
 }
+
 sub liftM {
     my ($m, $f) = @_;
     my $fprime =
