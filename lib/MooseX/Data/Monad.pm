@@ -9,7 +9,7 @@ sub sequence {
     my ($a, $b) = @_;
     return $a->bind( MooseX::Data::Function->new(
         arity => 1,
-        function => sub { my $ignore = shift; $b->apply() }
+        function => sub { my $ignore = shift; if($b->arity == 0) { $b->apply() } else { $b } }
     ));
 }
 

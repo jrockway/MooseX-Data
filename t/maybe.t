@@ -81,6 +81,7 @@ is $ten->liftM2(MooseX::Data::Maybe->Nothing, $minus)->from_maybe('fail'),
 
 my $fran = 0;
 my $sran = 0;
+
 MooseX::Data::Maybe->Just(10)->sequence(MooseX::Data::Function->new(
     arity    => 0,
     function => sub { $fran = 1; return MooseX::Data::Maybe->Nothing }
