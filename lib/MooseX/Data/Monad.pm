@@ -3,7 +3,6 @@ use Moose::Role;
 
 requires 'mreturn';
 requires 'bind';
-requires 'ap';
 
 sub sequence {
     my ($a, $b) = @_;
