@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 use MooseX::Data::List;
 use MooseX::Data::Function;
@@ -55,3 +55,17 @@ is_deeply [$sums_and_differences->list],
 is_deeply [MooseX::Data::List->mconcat($sums, $sums)->list],
           [map { $sums->list } 1,2],
   'monoid stuff works';
+
+# test monad
+
+is_deeply scalar $list->bind( MooseX::Data::Function->new(
+    function => sub {
+        my $x = shift;
+        $list->bind( MooseX::Data::Function->new(
+            function => sub {
+                my $y = shift;
+                $list->mreturn( [$x, $y] );
+            },
+        )),
+    },
+))->list, [[1,1],[1,2],[1,3],[2,1],[2,2],[2,3],[3,1],[3,2],[3,3]], 'list as monad works';

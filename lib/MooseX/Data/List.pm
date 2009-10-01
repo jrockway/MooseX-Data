@@ -4,6 +4,7 @@ use MooseX::AttributeHelpers;
 
 with 'MooseX::Data::Functor::Applicative',
   'MooseX::Data::Monoid',
+  'MooseX::Data::Monad',
   'MooseX::Data::Show';
 
 has list => (
@@ -53,6 +54,8 @@ sub mappend {
         list => [ $a->list, $b->list ],
     );
 }
+
+BEGIN { *mreturn = *pure }
 
 sub bind {
     my ($self, $g) = @_;
