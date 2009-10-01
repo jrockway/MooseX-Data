@@ -1,1 +1,6 @@
 *.ERR
+/pm_to_blib
+/inc
+/blib
+/Makefile
+/META.yml
