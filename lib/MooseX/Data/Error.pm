@@ -47,6 +47,11 @@ method bind(Function $f does coerce) {
     return $f->($self->right);
 }
 
+sub mzero {
+    my $class = shift;
+    return $class->Left(0);
+}
+
 # functor
 
 BEGIN { *pure = *Right }
@@ -65,6 +70,7 @@ method ap(Either $arg does coerce){
 with
   'MooseX::Data::Show',
   'MooseX::Data::Functor::Applicative',
-  'MooseX::Data::Monad';
+  'MooseX::Data::Monad',
+  'MooseX::Data::MonadZero';
 
 1;

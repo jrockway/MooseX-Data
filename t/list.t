@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 7;
 
 use MooseX::Data::List;
 use MooseX::Data::Function;
@@ -64,8 +64,30 @@ is_deeply scalar $list->bind( MooseX::Data::Function->new(
         $list->bind( MooseX::Data::Function->new(
             function => sub {
                 my $y = shift;
-                $list->mreturn( [$x, $y] );
+                MooseX::Data::List->mreturn( [$x, $y] );
             },
         )),
     },
 ))->list, [[1,1],[1,2],[1,3],[2,1],[2,2],[2,3],[3,1],[3,2],[3,3]], 'list as monad works';
+
+# test monadzero
+
+is_deeply scalar $list->bind( MooseX::Data::Function->new(
+    function => sub {
+        my $x = shift;
+        $list->bind( MooseX::Data::Function->new(
+            function => sub {
+                my $y = shift;
+                MooseX::Data::List->guard( $x != $y )->sequence(
+                    MooseX::Data::Function->new(
+                        arity   => 0,
+                        function => sub {
+                            MooseX::Data::List->mreturn( [$x, $y] );
+                        },
+                    ),
+                ),
+            },
+        )),
+    },
+))->list, [[1,2],[1,3],[2,1],[2,3],[3,1],[3,2]], 'list as monadzero works';
+

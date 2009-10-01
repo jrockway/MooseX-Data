@@ -58,11 +58,14 @@ method bind(Function $f) {
     return $f->($self->it);
 }
 
+BEGIN { *mzero = *Nothing }
+
  # could be a monoid, but suffers from the same mempty problem that
  # Function does
 
 with 'MooseX::Data::Functor::Applicative',
   'MooseX::Data::Show',
-  'MooseX::Data::Monad';
+  'MooseX::Data::Monad',
+  'MooseX::Data::MonadZero';
 
 1;

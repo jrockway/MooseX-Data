@@ -5,6 +5,7 @@ use MooseX::AttributeHelpers;
 with 'MooseX::Data::Functor::Applicative',
   'MooseX::Data::Monoid',
   'MooseX::Data::Monad',
+  'MooseX::Data::MonadZero',
   'MooseX::Data::Show';
 
 has list => (
@@ -62,6 +63,11 @@ sub bind {
     my $result = $self->mempty;
     $result = $result->mappend($g->($_)) for $self->list;
     return $result;
+}
+
+sub mzero {
+    my $self = shift;
+    return $self->new( list => [] );
 }
 
 1;

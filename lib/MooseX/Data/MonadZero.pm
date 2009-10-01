@@ -1,7 +1,18 @@
 package MooseX::Data::MonadZero;
-use Moose;
+use Moose::Role;
+
+with 'MooseX::Data::Monad';
 
 requires 'mzero';
-requires 'mplus';
+
+sub guard {
+    my ($m, $condition) = @_;
+    if ($condition){
+        $m->mreturn(undef);
+    }
+    else {
+        $m->mzero;
+    }
+}
 
 1;
