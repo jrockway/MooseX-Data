@@ -4,8 +4,6 @@ use Moose;
 extends 'MooseX::Data::Function'; # always returns a (a, s) pair
 with 'MooseX::Data::Monad';
 
-has '+arity' => ( default => 1 ); # the state
-
 sub runState {
     my ($self, $state) = @_;
     return $self->($state);

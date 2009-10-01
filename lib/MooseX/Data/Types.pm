@@ -30,12 +30,8 @@ coerce Either, from Any, via {
 class_type Function, { class => 'MooseX::Data::Function' };
 
 coerce Function, from CodeRef, via {
-    my $code = $_;
-    my $p = prototype $_;
-    my $length = $p ? length $p : 1; # reasonable default
     return MooseX::Data::Function->new(
-        arity    => $length,
-        function => $code,
+        function => $_,
     );
 };
 

@@ -21,10 +21,17 @@ has 'function' => (
 );
 
 has 'arity' => (
-    is       => 'ro',
-    isa      => 'Int',
-    required => 1,
+    is         => 'ro',
+    isa        => 'Int',
+    lazy_build => 1,
 );
+
+sub _build_arity {
+    my $self = shift;
+    my $fn = prototype $self->function;
+    return 1 unless defined $fn;
+    return length $fn;
+}
 
 # TODO, don't actually apply function, save value in list.  then we
 # can dump for debugging more easily
