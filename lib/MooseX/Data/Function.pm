@@ -5,6 +5,15 @@ with 'MooseX::Data::Show',
   # 'MooseX::Data::Monoid',
   'MooseX::Data::Functor::Applicative';
 
+use overload fallback => 1,
+  '&{}' => sub {
+      my $self = shift;
+      return sub {
+          my @args = @_;
+          $self->apply(@args);
+      },
+  };
+
 has 'function' => (
     is       => 'ro',
     isa      => 'CodeRef',
@@ -33,7 +42,8 @@ sub apply {
         }
     }
 
-    # sort of a special case; perl != haskell
+    # sort of a special case; perl != haskell and we want to remove
+    # the "Function" wrapper around a plain value ASAP.  I think.
     if($arity == 1){
         return $self->function->($arg);
     }
@@ -61,7 +71,7 @@ sub compose {
 
     return $f->new(
         arity    => 1,
-        function => sub { $f->apply($g->apply(@_)) },
+        function => sub { $f->($g->(@_)) },
     );
 }
 
@@ -84,7 +94,7 @@ sub ap {
         arity    => 1,
         function => sub {
             my ($env) = @_;
-            return $self->apply($env)->apply($g->apply($env));
+            return $self->($env)->($g->($env));
         },
     );
 }
@@ -106,7 +116,7 @@ sub mappend {
         arity => 1,
         function => sub {
             my ($x) = @_;
-            return $f->apply($x)->mappend($g->apply($x));
+            return $f->($x)->mappend($g->($x));
         },
     );
 }

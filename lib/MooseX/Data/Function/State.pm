@@ -8,7 +8,7 @@ has '+arity' => ( default => 1 ); # the state
 
 sub runState {
     my ($self, $state) = @_;
-    return $self->apply($state);
+    return $self->($state);
 }
 
 # instance Functor (State s) where
@@ -23,7 +23,7 @@ sub fmap {
             my $state = shift;
             my $result = $m->runState($state);
             my ($a, $state2) = @$result;
-            return [$f->apply($a), $state2];
+            return [$f->($a), $state2];
         },
     );
 }
@@ -51,7 +51,7 @@ sub bind {
             my $state = shift;
             my $result = $m->runState($state);
             my ($a, $state2) = @$result;
-            return $k->apply($a)->runState($state2);
+            return $k->($a)->runState($state2);
         },
     );
 }

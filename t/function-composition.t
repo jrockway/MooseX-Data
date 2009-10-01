@@ -12,13 +12,13 @@ my ($f, $g) = map {
     );
 } qw/f g/;
 
-is $f->apply('foo'), 'f (foo)', 'f works';
-is $g->apply('foo'), 'g (foo)', 'g works';
-is $f->apply($g->apply('foo')), 'f (g (foo))', 'f(g(x)) works';
-is $f->compose($g)->apply('foo'), 'f (g (foo))', 'f . g works';
-is $f->fmap($g)->apply('foo'), 'f (g (foo))', 'f <$> g works';
+is $f->('foo'), 'f (foo)', 'f works';
+is $g->('foo'), 'g (foo)', 'g works';
+is $f->($g->('foo')), 'f (g (foo))', 'f(g(x)) works';
+is $f->compose($g)->('foo'), 'f (g (foo))', 'f . g works';
+is $f->fmap($g)->('foo'), 'f (g (foo))', 'f <$> g works';
 
-is (MooseX::Data::Function->pure($f)->ap($g)->apply('foo'),
+is (MooseX::Data::Function->pure($f)->ap($g)->('foo'),
     'f (g (foo))', 'pure f <*> g == f <$> g',
 );
 
@@ -53,6 +53,6 @@ my $grid = [ [ 5,  1..5  ],
              [ 4, 21..25 ],
              [ 5, 26..30 ], ];
 
-my $next = $lookup_point->ap($extract_next_x)->ap($extract_next_y)->apply($grid);
+my $next = $lookup_point->ap($extract_next_x)->ap($extract_next_y)->($grid);
 is $next, 30, 'got next point';
 

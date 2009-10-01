@@ -34,14 +34,14 @@ BEGIN { *mreturn = *Just }
 
 method fmap(Function $f) {
     if($self->has_it){
-        return $self->Just( $f->apply( $self->it ) );
+        return $self->Just( $f->( $self->it ) );
     }
     return $self->Nothing;
 }
 
 method ap(Maybe $arg does coerce) {
     return $self->Nothing if $self->is_nothing || $arg->is_nothing;
-    return $self->Just( $self->it->apply( $arg->it ) );
+    return $self->Just( $self->it->( $arg->it ) );
 }
 
 method show {
@@ -55,7 +55,7 @@ method show {
 
 method bind(Function $f) {
     return $self->Nothing if $self->is_nothing;
-    return $f->apply($self->it);
+    return $f->($self->it);
 }
 
  # could be a monoid, but suffers from the same mempty problem that

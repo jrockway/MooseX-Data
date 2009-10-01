@@ -23,7 +23,7 @@ sub pure {
 sub fmap {
     my ($self, $g) = @_; # self == functor, g == function
     return $self->new( list => [
-        map { $g->apply($_) } $self->list,
+        map { $g->($_) } $self->list,
     ]);
 }
 
@@ -57,7 +57,7 @@ sub mappend {
 sub bind {
     my ($self, $g) = @_;
     my $result = $self->mempty;
-    $result = $result->mappend($g->apply($_)) for $self->list;
+    $result = $result->mappend($g->($_)) for $self->list;
     return $result;
 }
 

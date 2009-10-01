@@ -44,7 +44,7 @@ BEGIN { *mreturn = *Right }
 
 method bind(Function $f does coerce) {
     return $self->Left($self->left) if $self->has_left;
-    return $f->apply($self->right);
+    return $f->($self->right);
 }
 
 # functor
@@ -53,13 +53,13 @@ BEGIN { *pure = *Right }
 
 method fmap(Function $g does coerce){
     return $self->Left($self->left) if $self->has_left;
-    return $self->Right($g->apply($self->right));
+    return $self->Right($g->($self->right));
 }
 
 method ap(Either $arg does coerce){
     return $self->Left($self->left) if $self->has_left;
     return $self->Left($arg->left) if $arg->has_left;
-    return $self->Right($self->right->apply( $arg->right ));
+    return $self->Right($self->right->( $arg->right ));
 }
 
 with

@@ -8,7 +8,7 @@ sub sequence {
     my ($a, $b) = @_;
     return $a->bind( MooseX::Data::Function->new(
         arity => 1,
-        function => sub { my $ignore = shift; if($b->arity == 0) { $b->apply() } else { $b } }
+        function => sub { my $ignore = shift; if($b->arity == 0) { $b->() } else { $b } }
     ));
 }
 
@@ -21,7 +21,7 @@ sub liftM {
             function => sub {
                 my $x = shift;
                 $m->mreturn(
-                    $f->apply($x),
+                    $f->($x),
                 );
             },
         ),
@@ -41,7 +41,7 @@ sub liftM2 {
                         function => sub {
                             my $y = shift;
                             return $m2->mreturn(
-                                $f->apply($x)->apply($y),
+                                $f->($x)->($y),
                             );
                         },
                     ),
